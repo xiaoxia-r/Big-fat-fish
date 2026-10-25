@@ -78,7 +78,6 @@ jobs:
           p.write_text(s)
           print("已更新 Java 编译目标")
           PY
-
       - name: Build debug APK
         working-directory: BlueMermaidAndroid
         run: gradle --no-daemon assembleDebug
