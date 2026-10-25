@@ -38,6 +38,12 @@ jobs:
           test -f BlueMermaidAndroid/app/build.gradle
 
       
+      - name: Show Kotlin source around error
+        working-directory: BlueMermaidAndroid
+        run: |
+          nl -ba app/src/main/java/com/example/bluemermaid/PetOverlayService.kt | sed -n '160,175p'
+
+
       - name: Align Java and Kotlin JVM targets
         working-directory: BlueMermaidAndroid
         run: |
