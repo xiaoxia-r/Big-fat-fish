@@ -47,6 +47,9 @@ jobs:
       - name: Align Java and Kotlin JVM targets
         working-directory: BlueMermaidAndroid
         run: |
+
+          sed -i 's/buildMenu(dp)/buildMenu { n ->   dp(n) }/' app/src/main/java/com/example/bluemermaid/PetOverlayService.kt
+
           python3 - <<'PY'
           from pathlib import Path
           import re
