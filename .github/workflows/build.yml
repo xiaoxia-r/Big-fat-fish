@@ -1,5 +1,4 @@
 
-
 name: Build Blue Mermaid Android APK
 
 on:
@@ -38,14 +37,16 @@ jobs:
           unzip -q blue_mermaid_android_project.zip
           test -f BlueMermaidAndroid/app/build.gradle
 
-            - name: Align Java and Kotlin JVM targets
+      - name: Align Java and Kotlin JVM targets
         working-directory: BlueMermaidAndroid
         run: |
           sed -i 's/VERSION_1_8/VERSION_17/g' app/build.gradle
           grep -n -A4 -B2 'compileOptions\|kotlinOptions' app/build.gradle
+
       - name: Build debug APK
         working-directory: BlueMermaidAndroid
         run: gradle --no-daemon assembleDebug
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
