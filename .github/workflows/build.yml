@@ -37,11 +37,47 @@ jobs:
           unzip -q blue_mermaid_android_project.zip
           test -f BlueMermaidAndroid/app/build.gradle
 
+      
       - name: Align Java and Kotlin JVM targets
         working-directory: BlueMermaidAndroid
         run: |
-          sed -i 's/VERSION_1_8/VERSION_17/g' app/build.gradle
-          grep -n -A4 -B2 'compileOptions\|kotlinOptions' app/build.gradle
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path("app/build.gradle")
+          s = p.read_text()
+
+          if not re.search(r'\bandroid\s*\{', s):
+              raise SystemExit("找不到 android 配置块")
+
+          if "compileOptions" not in s:
+              s = re.sub(
+                  r'\bandroid\s*\{',
+                  lambda m: m.group(0) + """
+              compileOptions {
+                  sourceCompatibility JavaVersion.VERSION_17
+                  targetCompatibility JavaVersion.VERSION_17
+              }
+          """,
+                  s,
+                  count=1
+              )
+          else:
+              s = re.sub(
+                  r'(sourceCompatibility\s+)JavaVersion\.VERSION_1_8',
+                  r'\1JavaVersion.VERSION_17',
+                  s
+              )
+              s = re.sub(
+                  r'(targetCompatibility\s+)JavaVersion\.VERSION_1_8',
+                  r'\1JavaVersion.VERSION_17',
+                  s
+              )
+
+          p.write_text(s)
+          print("已更新 Java 编译目标")
+          PY
 
       - name: Build debug APK
         working-directory: BlueMermaidAndroid
